@@ -25,8 +25,19 @@ app.get('/api/timestamp', (req, res) => {
 });
 
 app.get('/api/timestamp/:datestring', (req, res) => {
-    let d = new Date(req.params.datestring);
+    let stringToInt = parseInt(req.params.datestring);
+    let d;
 
+    // Assume its a unix timestamp if is an int
+    if (!isNaN(stringToInt)) {
+        d = new Date(stringToInt);
+    }
+    // Else try making a date assuming it's ISO compliant
+    else {
+        d = new Date(req.params.datestring);
+    }
+
+    // Check if it's valid; if not, return an error
     if(d.toUTCString() === 'Invalid Date') {
         res.send({
             "error": "Invalid Date"
@@ -35,7 +46,7 @@ app.get('/api/timestamp/:datestring', (req, res) => {
         res.send({
             "unix": d.getTime(),
             "utc": d.toUTCString()
-        })
+        });
     }
 });
 
