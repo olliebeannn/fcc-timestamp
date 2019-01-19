@@ -25,16 +25,17 @@ app.get('/api/timestamp', (req, res) => {
 });
 
 app.get('/api/timestamp/:datestring', (req, res) => {
-    let stringToInt = parseInt(req.params.datestring);
+    let str = req.params.datestring;
+
     let d;
 
     // Assume its a unix timestamp if is an int
-    if (!isNaN(stringToInt)) {
-        d = new Date(stringToInt);
+    if (Number.isInteger(Number(str))) {
+        d = new Date(Number(str));
     }
     // Else try making a date assuming it's ISO compliant
     else {
-        d = new Date(req.params.datestring);
+        d = new Date(str);
     }
 
     // Check if it's valid; if not, return an error
