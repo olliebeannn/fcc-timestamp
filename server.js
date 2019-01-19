@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const moment = require('moment');
 
 let app = new express();
 
@@ -26,19 +25,17 @@ app.get('/api/timestamp', (req, res) => {
 });
 
 app.get('/api/timestamp/:datestring', (req, res) => {
-    let str = req.params.datestring;
+    let d = new Date(req.params.datestring);
 
-    if(moment(str).isValid()) {
-        let d = moment(str);
-
-        res.send({
-            "unix": d.unix(),
-            "utc": d.utc()
-        });
-    } else {
+    if(d.toUTCString() === 'Invalid Date') {
         res.send({
             "error": "Invalid Date"
         });
+    } else {
+        res.send({
+            "unix": d.getTime(),
+            "utc": d.toUTCString()
+        })
     }
 });
 
