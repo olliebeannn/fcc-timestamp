@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const moment = require('moment');
 
 let app = new express();
 
@@ -27,20 +28,18 @@ app.get('/api/timestamp', (req, res) => {
 app.get('/api/timestamp/:datestring', (req, res) => {
     let str = req.params.datestring;
 
-    console.log(str);
+    if(moment(str).isValid()) {
+        let d = moment(str);
 
-    // Look at the string, see if it's empty
-    // If so, create new date, send back correctly formatted object
-
-    // If not, check if string fits ITC format
-    // Create new date, return in correct format
-
-    // If not, check if it's a valid integer
-    // Create new date, return in correct format
-
-    // If none of those, return invalid date object
-
-    res.send(req.params);
+        res.send({
+            "unix": d.unix(),
+            "utc": d.utc()
+        });
+    } else {
+        res.send({
+            "error": "Invalid Date"
+        });
+    }
 });
 
 app.listen(3000, () => {
